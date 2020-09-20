@@ -87,9 +87,10 @@ class Sinal():
         
         return lista_filtro_gaussiano
 
-      
+    # FIltra o sinal pelo cálculo da Convolução entre entrada e filtro
+    def filtra_sinal(self):
+        pass
 
-    
 
 
 
@@ -140,19 +141,24 @@ def main():
     filtro_media_5 = filtro.gera_filtro_media(5)
     print("Filtro Media 5 gerado:", filtro_media_5)
 
-    #3) Critério de parada: y = M + N - 1
-    y = FiltraSinal(vetor_entrada_sinais, filtro_media_5, "media")
-    dimensao_y = y.criterio_parada()
-    print("Dimensao da saida:", dimensao_y)
+    #3) Gerar o filtro de media 11: m_11
+    filtro_media_11 = filtro.gera_filtro_media(11)
+    print("Filtro Media 11 gerado:", filtro_media_11)
+
+
+    # #3) Critério de parada: y = M + N - 1
+    # y = FiltraSinal(vetor_entrada_sinais, filtro_media_5, "media")
+    # dimensao_y = y.criterio_parada()
+    # print("Dimensao da saida:", dimensao_y)
 
 
     # Gera Filtro Gaussiano de tamanho 5
     filtro_gaussiano_5 = filtro.gera_filtro_gaussiano(5)
-    print("Filtro Media 5 gerado:", filtro_gaussiano_5)
+    print("Filtro Gaussiano 5 gerado:", filtro_gaussiano_5)
 
     # Gera Filtro Gaussiano de tamanho 11
     filtro_gaussiano_11 = filtro.gera_filtro_gaussiano(11)
-    print("Filtro Media 11 gerado:", filtro_gaussiano_11)
+    print("Filtro Gaussiano 11 gerado:", filtro_gaussiano_11)
 
 
 
