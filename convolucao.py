@@ -170,10 +170,10 @@ class Sinal():
         self.sinal = args
         self.nome_grafico = kwargs
 
-        print(self.nome_grafico.items())
+        #print(self.nome_grafico.items())
         #print(self.sinal)
         caminho_graficos = 'graficos'
-        print(type(self.sinal))
+        #print(type(self.sinal))
         df = pd.DataFrame()
         data = dict()
         data = self.nome_grafico
@@ -251,12 +251,12 @@ def main():
     # filtro_media_5 = filtro.cria_filtro_media(5)
     filtro = Sinal()
     m_5 = filtro.gera_filtro_media(5)
-    print("Filtro Media 5 gerado:", m_5)
+    #print("Filtro Media 5 gerado:", m_5)
 
 
     #2-b) Gerar o filtro de media 11: m_11
     m_11 = filtro.gera_filtro_media(11)
-    print("Filtro Media 11 gerado:", m_11)
+    #print("Filtro Media 11 gerado:", m_11)
     
     #2-c) Obtenha y1[n] e y2[n].
     y1 = list()
@@ -289,11 +289,11 @@ def main():
 
     #3-a) Gera Filtro Gaussiano de tamanho 5
     g_5 = filtro.gera_filtro_gaussiano(5)
-    print("Filtro Gaussiano 5 gerado:", g_5)
+    #print("Filtro Gaussiano 5 gerado:", g_5)
 
     #3-b) Gera Filtro Gaussiano de tamanho 11
     g_11 = filtro.gera_filtro_gaussiano(11)
-    print("Filtro Gaussiano 11 gerado:", g_11)
+    #print("Filtro Gaussiano 11 gerado:", g_11)
 
     #3-c) Obtenha z1[n] = x[n]*g_5[n] e z2[n] = x[n]*g_11[n]
     z1 = filtro.filtra_sinal(vetor_entrada_sinais, g_5)
@@ -306,12 +306,15 @@ def main():
 
     #2-d) Plotar o gráfico de um trecho de 100 amostras dos dois sinais filtrados
     #Plotar o gráfico sem filtro
-    filtro.plotar_grafico(z1, z2, vetor_entrada_sinais,**{"nome_imagem_y1":"filtro_media_5", "nome_imagem_y2":"filtro_media_11",
+    filtro.plotar_grafico(z1, z2, vetor_entrada_sinais,**{"nome_imagem_z1":z1, "nome_imagem_z2":z2,
     "nome_imagem_bruto":vetor_entrada_sinais})
     #filtro.plotar_grafico(y2)
 
     #4 - ANALISE DOS RESULTADOS
-    filtro.plotar_grafico(y1, z1, vetor_entrada_sinais,**{"nome_imagem_y1":y1, "nome_imagem_y2":z1, 
+    filtro.plotar_grafico(y1, z1, vetor_entrada_sinais,**{"nome_imagem_y1":y1, "nome_imagem_z1":z1, 
+    "nome_imagem_bruto":vetor_entrada_sinais})
+
+    filtro.plotar_grafico(y2, z2, vetor_entrada_sinais,**{"nome_imagem_y2":y1, "nome_imagem_z2":z1, 
     "nome_imagem_bruto":vetor_entrada_sinais})
 
 
