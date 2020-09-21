@@ -170,21 +170,25 @@ class Sinal():
         self.sinal = args
         self.nome_grafico = kwargs
 
-        
-
         print(self.nome_grafico.items())
         #print(self.sinal)
         caminho_graficos = 'graficos'
         print(type(self.sinal))
         df = pd.DataFrame()
+        data = dict()
+        data = self.nome_grafico
+        nomes = list()
+        for key in data.keys():
+            nomes.append(key)
 
-        data = {
-            "Media5":self.sinal[0],
-            "Media11":self.sinal[1],
-            "SinalBruto":self.sinal[2]
-        }
 
-        df = pd.DataFrame(data, columns=['SinalBruto','Media5','Media11'])
+        # data = {
+        #     "Media5":self.sinal[0],
+        #     "Media11":self.sinal[1],
+        #     "SinalBruto":self.sinal[2]
+        # }
+
+        df = pd.DataFrame(data, columns=nomes)
         print(df)
         df.plot()
         plt.show()
@@ -258,13 +262,13 @@ def main():
     y1 = list()
     y2 = list()
     y1 = filtro.filtra_sinal(vetor_entrada_sinais, m_5)
-    print("*********************************", len(y1))
+    #print("*********************************", len(y1))
 
     #Remove sinais de sobra
     y1 = filtro.remove_sinais_sobra(len(m_5), y1)
 
     y2 = filtro.filtra_sinal(vetor_entrada_sinais,m_11)
-    print("*********************************", len(y2))
+    #print("*********************************", len(y2))
     #Remove sinais de sobra
     y2 = filtro.remove_sinais_sobra(len(m_11), y2)
 
@@ -277,7 +281,7 @@ def main():
 
     #2-d) Plotar o gráfico de um trecho de 100 amostras dos dois sinais filtrados
     #Plotar o gráfico sem filtro
-    filtro.plotar_grafico(y1, y2, vetor_entrada_sinais,**{"nome_imagem_y1":"filtro_media_5", "nome_imagem_y2":"filtro_media_11"})
+    filtro.plotar_grafico(y1, y2, vetor_entrada_sinais,**{"nome_imagem_y1":y1, "nome_imagem_y2":y2, "nome_imagem_bruto":vetor_entrada_sinais})
     #filtro.plotar_grafico(y2)
 
 
@@ -302,11 +306,13 @@ def main():
 
     #2-d) Plotar o gráfico de um trecho de 100 amostras dos dois sinais filtrados
     #Plotar o gráfico sem filtro
-    filtro.plotar_grafico(z1, z2, vetor_entrada_sinais,**{"nome_imagem_y1":"filtro_media_5", "nome_imagem_y2":"filtro_media_11"})
+    filtro.plotar_grafico(z1, z2, vetor_entrada_sinais,**{"nome_imagem_y1":"filtro_media_5", "nome_imagem_y2":"filtro_media_11",
+    "nome_imagem_bruto":vetor_entrada_sinais})
     #filtro.plotar_grafico(y2)
 
     #4 - ANALISE DOS RESULTADOS
-    filtro.plotar_grafico(y1, z1, vetor_entrada_sinais,**{"nome_imagem_y1":"filtro_media_5", "nome_imagem_y2":"filtro_media_11"})
+    filtro.plotar_grafico(y1, z1, vetor_entrada_sinais,**{"nome_imagem_y1":y1, "nome_imagem_y2":z1, 
+    "nome_imagem_bruto":vetor_entrada_sinais})
 
 
 
