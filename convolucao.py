@@ -4,8 +4,7 @@
 # In[1]:
 
 
-# Plotar o gráfico com o filtro
-# importing the required module 
+# Plotar o gráfico com o filtro 
 import matplotlib.pyplot as plt
 import os
 import pandas as pd
@@ -14,27 +13,36 @@ import pandas as pd
 # In[2]:
 
 
-
 class Sinal():
+    """
+    Esta classe foi construida como entrega do projeto da matéria "Analise de Sinais"
+    O objetivo da classe é permitir que calculemos a saída de um sistema SLIT, a partir
+    de um filtro h[t] e entrada dada pelo sinal x[t].
+    A saída y[t] filtrada do sistema será a convolução de x[t] com h[t], denotada por 
+    y[t] = x[t]*h[t]
+
+    Foram impementados dois tipos de filtros: filtro da média e filtro gaussiano
+
+    É possível utilizar todos os sinais presentes na pasta "sinais"
+
+    """
     def __init__(self,
                 nome_arquivo_entrada="",
                 caminho="", 
-                reverse=False,
-                grava_imagem=False):
+                reverse=False):
         self.caminho = caminho
         self.nome_arquivo_entrada = nome_arquivo_entrada
         self.reverse = reverse
         self.lista_sinal = list()
     
 
-    def quant_lista_arquivo(self):
+    def informacoes_arquivo_entrada(self):
 
-        # Transformar em um try
         if self.caminho != "" and self.nome_arquivo_entrada != "":
             arquivo = os.path.join(self.caminho, self.nome_arquivo_entrada)
         else:
             arquivo = self.nome_arquivo_entrada
-            
+
         with open(arquivo, "r") as f:
             num_lines = 0
             vetor_entrada_sinais = list()
@@ -44,7 +52,7 @@ class Sinal():
                     vetor_entrada_sinais.append(float(l.strip()))
                     num_lines += 1
 
-        # Se o usuarío optar por inverter a série temporal dos dados
+        # Se o usuario optar por inverter a série temporal dos dados
         if self.reverse:
             vetor_entrada_sinais.reverse()
 
@@ -55,6 +63,8 @@ class Sinal():
     def gera_filtro_media(self, valor_media):
         self.valor_media = valor_media
         filtro_h = list()
+
+        # Se valor igual a 3, gera [1/3, 1/3, 1/3]
         for i in range(1, self.valor_media+1):
             filtro_h.append(1/self.valor_media)
         return filtro_h
@@ -65,7 +75,7 @@ class Sinal():
         linha = self.tamanho - 1
         soma_coef = 0
 
-        # utilizado pra calcular cada valor co Triangulo de Pascal
+        # utilizado pra calcular cada valor do Triangulo de Pascal
         def coeficiente_binomial(linha, kaesimo):
             #linha! / (kesimo! * (linha - kesimo)!)
             def fatorial(numero):
@@ -83,11 +93,13 @@ class Sinal():
             coef_binomial = n / (k * diferenca)
             return coef_binomial
 
+        # Se gaussiano é ordem n, extrai os valores referentes a linha n-1 do triângulo de pascal
         for i in range(linha+1):
             coef_binomial = coeficiente_binomial(linha,i)
             soma_coef = soma_coef + coef_binomial
             lista_filtro_gaussiano.append(coef_binomial)
         
+        # divide cada valor da lista com o filtro gaussiano e divide pela some dos coeficientes da linha (n-1)
         for n in range(len(lista_filtro_gaussiano)):
             lista_filtro_gaussiano[n] = lista_filtro_gaussiano[n] / soma_coef
         
@@ -105,7 +117,7 @@ class Sinal():
 
         saida_y = list()
         #dim_x = len(sinais_entrada)
-        for n in range(self.dimensao_y_n):
+        for n in range(self.dimensao_x):
             saida_temp = 0
             #saida_y[n] = 0
             for k in range(self.dimensao_filtro_h):
@@ -150,6 +162,8 @@ class Sinal():
         
         return saida_y
 
+    # Utilizar caso a técnica utilizada seja a circular.
+    # Esta função removerá as bordas
     def remove_sinais_sobra(self, tamanho_filtro, sinal_filtrado):
         self.sinal_filtrado = sinal_filtrado
         self.tamanho_filtro = tamanho_filtro
@@ -164,95 +178,63 @@ class Sinal():
         return self.sinal_filtrado
 
     #Plotar gráfico com matplob
-    def plotar_grafico(self, *args, **kwargs):
+    def plotar_grafico(self, nome_eixox, nome_eixoy, *args, **kwargs):
         # *args contem as listas com os sinais
         # **kwargs contem os nomes que queremos salvar os arquivos do grafico
         self.sinal = args
         self.nome_grafico = kwargs
+        self.nome_eixox = nome_eixox
+        self.nome_eixoy = nome_eixoy
 
         #print(self.nome_grafico.items())
         #print(self.sinal)
-        caminho_graficos = 'graficos'
-        #print(type(self.sinal))
-        df = pd.DataFrame()
+        caminho_graficos = r'graficos/'
         data = dict()
         data = self.nome_grafico
-        nomes = list()
-        for key in data.keys():
-            nomes.append(key)
+        nomes_legenda = list()
 
-
-        # data = {
-        #     "Media5":self.sinal[0],
-        #     "Media11":self.sinal[1],
-        #     "SinalBruto":self.sinal[2]
-        # }
-
-        df = pd.DataFrame(data, columns=nomes)
-        print(df)
-        df.plot()
-        plt.show()
-
-
-        # plt.plot(self.sinal[0], self.sinal[1])
-        # plt.savefig(caminho_graficos + '/teste.png')
-        # plt.show()
-
-            # if self.nome != None:
-            #     if(os.path.exists(caminho_graficos)):
-            #         plt.savefig(caminho_graficos + '/nome.png')
-
-
-
-#Classe para geração dos filtros de Média ou Gaussiano
-class GeraFiltroSinal():
-    def __init__ (self, lista_sinais_entrada):
-        self.lista_sinais_entrada = lista_sinais_entrada
-
-
-    def cria_filtro_media(self, valor_media):
-        self.valor_media = valor_media
-        filtro_h = list()
-        for i in range(1, self.valor_media+1):
-            filtro_h.append(1/self.valor_media)
-        return filtro_h
-
-    def cria_filtro_gausiano(self, valor_gaussiano):
-        pass
+        # armazena os nomes de cada linha no gráfico
+        for key, value in data.items():
+            if isinstance(value, list):
+                nomes_legenda.append(key)
     
 
-class FiltraSinal():
-    def __init__(self, sinal_entrada, lista_filtro, tipo_filtro="media"):
-        self.sinal_entrada = sinal_entrada
-        self.lista_filtro = lista_filtro
-        self.tipo_filtro = tipo_filtro
+        df = pd.DataFrame(data, columns=nomes_legenda)
+        #print(df[300:400])
 
-    def criterio_parada(self):
-        quant_sinais_entrada = len(self.sinal_entrada)
-        quant_sinais_saida = len(self.lista_filtro)
-        return quant_sinais_entrada + quant_sinais_saida - 1
+        #plotar somente os 100 primeiros valores para melhor visualização das diferenças
+        df[0:100].plot()
 
-    def filtro_media(self):
-        pass
+        #
+        plt.ylabel(self.nome_eixoy)
+        plt.xlabel(self.nome_eixox)
+        #plt.show()
+
+        # Salva na pasta graficos 
+
+        if not (os.path.exists(caminho_graficos)):
+            os.mkdir('graficos')
+        
+        plt.savefig(caminho_graficos + nomes_legenda[0] + 'x' + nomes_legenda[1] + '.png')
+
+        plt.show()
 
 
 def main():
     
     #1) Escolher um dos sinais disponiveis no arquivo de sinais
+    pasta_sinais = r'sinais/'
     arquivo_sinais = "dolar.txt"
-    entrada = Sinal(arquivo_sinais, reverse=True)
-    quant_sinais, vetor_entrada_sinais = entrada.quant_lista_arquivo()
+    entrada = Sinal(pasta_sinais + arquivo_sinais, reverse=True)
+    quant_sinais, vetor_entrada_sinais = entrada.informacoes_arquivo_entrada()
 
 
     #2 Filtragem da Média
 
     #2-a) Gerar o filtro da media 5: m_5
-    # filtro = GeraFiltroSinal(vetor_entrada_sinais)
-    # filtro_media_5 = filtro.cria_filtro_media(5)
     filtro = Sinal()
     m_5 = filtro.gera_filtro_media(5)
-    #print("Filtro Media 5 gerado:", m_5)
-
+  
 
     #2-b) Gerar o filtro de media 11: m_11
     m_11 = filtro.gera_filtro_media(11)
@@ -262,27 +244,23 @@ def main():
     y1 = list()
     y2 = list()
     y1 = filtro.filtra_sinal(vetor_entrada_sinais, m_5)
-    #print("*********************************", len(y1))
 
-    #Remove sinais de sobra
-    y1 = filtro.remove_sinais_sobra(len(m_5), y1)
+    #Remove sinais de sobra. #Nao sera mais utilizado
+    #y1 = filtro.remove_sinais_sobra(len(m_5), y1)
 
     y2 = filtro.filtra_sinal(vetor_entrada_sinais,m_11)
     #print("*********************************", len(y2))
-    #Remove sinais de sobra
-    y2 = filtro.remove_sinais_sobra(len(m_11), y2)
-
-
-    print("Amostra dos PRIMEIROS 20 valores da saida y (sinal filtrado pela media 5):", y1[:20])
-    print("Amostra dos PRIMEIROS 20 valores da saida y (sinal filtrado pela media 11):", y1[:20])
-    print("Amostra dos ÚLTIMOS 20 valores da saida y (sinal filtrado pela media 5):", y1[-20:])
-    print("Amostra dos ÚLTIMOS 20 valores da saida y (sinal filtrado pela media 11):", y1[-20:])
+    #Remove sinais de sobra. # Nao sera mais utilizado
+    #y2 = filtro.remove_sinais_sobra(len(m_11), y2)
 
 
     #2-d) Plotar o gráfico de um trecho de 100 amostras dos dois sinais filtrados
-    #Plotar o gráfico sem filtro
-    filtro.plotar_grafico(y1, y2, vetor_entrada_sinais,**{"nome_imagem_y1":y1, "nome_imagem_y2":y2, "nome_imagem_bruto":vetor_entrada_sinais})
-    #filtro.plotar_grafico(y2)
+    #Plotar o gráfico sem filtro.
+    # Nomes dos eixos
+    eixoy = 'Valor do Dolar'
+    eixox = 'Evolução por dia (2014 a 2020) - 100 primeiros valores'
+    filtro.plotar_grafico(eixox, eixoy, y1, y2, vetor_entrada_sinais, 
+        **{"filtro_media_5":y1, "filtro_media_11":y2, "sinal_bruto":vetor_entrada_sinais})
 
 
     #3 - FILTRAGEM GAUSSIANA
@@ -299,26 +277,24 @@ def main():
     z1 = filtro.filtra_sinal(vetor_entrada_sinais, g_5)
     z2 = filtro.filtra_sinal(vetor_entrada_sinais, g_11)
 
+    #Remove sinais de sobra. Necessario somente na convolução ciurcular.
+    #z1 = filtro.remove_sinais_sobra(len(g_5), z1)
     #Remove sinais de sobra
-    z1 = filtro.remove_sinais_sobra(len(g_5), z1)
-    #Remove sinais de sobra
-    z2 = filtro.remove_sinais_sobra(len(g_11), z2)
+    #z2 = filtro.remove_sinais_sobra(len(g_11), z2)
+
 
     #2-d) Plotar o gráfico de um trecho de 100 amostras dos dois sinais filtrados
     #Plotar o gráfico sem filtro
-    filtro.plotar_grafico(z1, z2, vetor_entrada_sinais,**{"nome_imagem_z1":z1, "nome_imagem_z2":z2,
-    "nome_imagem_bruto":vetor_entrada_sinais})
-    #filtro.plotar_grafico(y2)
+    # Criei um dicionario pra passar os nomesm que quero plotar no grafico
+    filtro.plotar_grafico(eixox, eixoy, z1, z2, vetor_entrada_sinais,**{"filtro_gaussiano_5":z1, "filtro_gaussiano_11":z2,
+    "sinal_bruto":vetor_entrada_sinais})
 
     #4 - ANALISE DOS RESULTADOS
-    filtro.plotar_grafico(y1, z1, vetor_entrada_sinais,**{"nome_imagem_y1":y1, "nome_imagem_z1":z1, 
-    "nome_imagem_bruto":vetor_entrada_sinais})
+    filtro.plotar_grafico(eixox, eixoy, y1, z1, vetor_entrada_sinais,**{"filtro_media_5":y1, "filtro_gaussiano_5":z1, 
+    "sinal_bruto":vetor_entrada_sinais})
 
-    filtro.plotar_grafico(y2, z2, vetor_entrada_sinais,**{"nome_imagem_y2":y1, "nome_imagem_z2":z1, 
-    "nome_imagem_bruto":vetor_entrada_sinais})
-
-
-
+    filtro.plotar_grafico(eixox, eixoy, y2, z2, vetor_entrada_sinais,**{"filtro_media_11":y2, "filtro_gaussiano_11":z2, 
+    "sinal_bruto":vetor_entrada_sinais})
 
 
 

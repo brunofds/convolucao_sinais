@@ -1,0 +1,19 @@
+Descrição dos sinais:
+
+bovespa - índices bovespa diários entre 2018 e 2020 (o sinal está em ordem reversa, ou seja, a primeira amostra é a última - mais recente - e a última é a mais antiga)
+
+dolar - cotação do dólar entre os anos de 2014 e 2020 (o sinal está em ordem reversa, ou seja, a primeira amostra é a última - mais recente - e a última é a mais antiga)
+
+sinal01 - número de vítimas de acidentes aéreos a partir de 1910
+
+sinal02 - número de mortes total em um estado americano por trimestre
+
+sinal03 - número de nascimento de mulheres em estado americano em 1959 (por dia)
+
+sinal04 - não há informações disponíveis
+
+sinal05 - taxas de ocupação dos hotéis em região dos EUA ao longo dos anos 1999 a 2012
+
+sinal06 - número de pinguins contabilizados em região da Antártica de 2000 a 2006 (por mês)
+
+sinal07 - toneladas de gelo derretido da Antartica entre 1990 e 2011 (por mês)
